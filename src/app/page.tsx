@@ -19,7 +19,7 @@ export default function Home() {
 
     try {
       // Replace with your Formspree form ID or API endpoint
-      const response = await fetch("https://formspree.io/f/XJGELYJV", {
+      const response = await fetch("https://formspree.io/f/xjgelv", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
