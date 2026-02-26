@@ -1,6 +1,44 @@
 import Link from "next/link";
 
+"use client";
+
+import { useState } from "react";
+
 export default function Home() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    message: ""
+  });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+
+    try {
+      // Replace with your Formspree form ID or API endpoint
+      const response = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", company: "", message: "" });
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
       {/* Header */}
@@ -172,34 +210,60 @@ export default function Home() {
               Send us a message and we&apos;ll get back to you within 24 hours.
             </p>
           </div>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="grid md:grid-cols-2 gap-4">
               <input
                 type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
                 placeholder="Your Name"
+                required
                 className="w-full px-5 py-4 rounded-xl bg-white border border-[#E8E6E4] text-[#2D3436] placeholder-[#B2BEC3] focus:outline-none focus:border-[#2D3436] transition"
               />
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Your Email"
+                required
                 className="w-full px-5 py-4 rounded-xl bg-white border border-[#E8E6E4] text-[#2D3436] placeholder-[#B2BEC3] focus:outline-none focus:border-[#2D3436] transition"
               />
             </div>
             <input
               type="text"
+              name="company"
+              value={formData.company}
+              onChange={handleChange}
               placeholder="Company Name (Optional)"
               className="w-full px-5 py-4 rounded-xl bg-white border border-[#E8E6E4] text-[#2D3436] placeholder-[#B2BEC3] focus:outline-none focus:border-[#2D3436] transition"
             />
             <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
               placeholder="Tell us about your bookkeeping needs..."
               rows={5}
+              required
               className="w-full px-5 py-4 rounded-xl bg-white border border-[#E8E6E4] text-[#2D3436] placeholder-[#B2BEC3] focus:outline-none focus:border-[#2D3436] transition resize-none"
             />
+            {status === "success" && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-xl text-green-700">
+                ✅ Message sent successfully! We&apos;ll get back to you within 24 hours.
+              </div>
+            )}
+            {status === "error" && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
+                ❌ Something went wrong. Please try again or email us directly.
+              </div>
+            )}
             <button
               type="submit"
-              className="w-full bg-[#2D3436] text-white py-4 rounded-xl font-medium hover:bg-[#1E2526] transition shadow-lg shadow-[#2D3436]/20"
+              disabled={status === "loading"}
+              className="w-full bg-[#2D3436] text-white py-4 rounded-xl font-medium hover:bg-[#1E2526] transition shadow-lg shadow-[#2D3436]/20 disabled:opacity-50"
             >
-              Send Message
+              {status === "loading" ? "Sending..." : "Send Message"}
             </button>
           </form>
         </div>
