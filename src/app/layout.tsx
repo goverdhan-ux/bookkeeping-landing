@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Professional Bookkeeping Services",
-  description: "Expert bookkeeping solutions for your business",
+  title: "Rishabh Bookkeeping | Professional Bookkeeping Services",
+  description: "Expert bookkeeping solutions for your business. Stress-free accounting, accurate records, and financial clarity.",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-50">
+      <body className="antialiased">
         {children}
       </body>
     </html>
